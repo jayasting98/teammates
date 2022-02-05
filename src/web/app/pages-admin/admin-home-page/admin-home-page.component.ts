@@ -3,15 +3,7 @@ import { finalize } from 'rxjs/operators';
 import { AccountService } from '../../../services/account.service';
 import { JoinLink } from '../../../types/api-output';
 import { ErrorMessageOutput } from '../../error-message-output';
-
-interface InstructorData {
-  name: string;
-  email: string;
-  institution: string;
-  status: string;
-  joinLink?: string;
-  message?: string;
-}
+import { InstructorData } from "../../components/new-instructor-data-row/instructor-data";
 
 /**
  * Admin home page.
@@ -29,6 +21,7 @@ export class AdminHomePageComponent {
   instructorInstitution: string = '';
 
   instructorsConsolidated: InstructorData[] = [];
+  isInstructorRowEditModeEnabled: boolean[] = [];
   activeRequests: number = 0;
 
   isAddingInstructors: boolean = false;
@@ -58,6 +51,7 @@ export class AdminHomePageComponent {
         institution: instructorDetailSplit[2],
         status: 'PENDING',
       });
+      this.isInstructorRowEditModeEnabled.push(false);
     }
     this.instructorDetails = invalidLines.join('\r\n');
   }
@@ -76,6 +70,7 @@ export class AdminHomePageComponent {
       institution: this.instructorInstitution,
       status: 'PENDING',
     });
+    this.isInstructorRowEditModeEnabled.push(false);
     this.instructorName = '';
     this.instructorEmail = '';
     this.instructorInstitution = '';
@@ -86,7 +81,7 @@ export class AdminHomePageComponent {
    */
   addInstructor(i: number): void {
     const instructor: InstructorData = this.instructorsConsolidated[i];
-    if (instructor.status !== 'PENDING' && instructor.status !== 'FAIL') {
+    if (this.isInstructorRowEditModeEnabled[i] || (instructor.status !== 'PENDING' && instructor.status !== 'FAIL')) {
       return;
     }
     this.activeRequests += 1;
@@ -111,10 +106,20 @@ export class AdminHomePageComponent {
   }
 
   /**
-   * Cancels the instructor at the i-th index.
+   * Removes the instructor at the i-th index.
    */
-  cancelInstructor(i: number): void {
+  removeInstructor(i: number): void {
     this.instructorsConsolidated.splice(i, 1);
+  }
+
+  /**
+   * Sets the i-th instructor data row's edit mode status.
+   *
+   * @param i The index.
+   * @param isEnabled Whether the edit mode status is enabled.
+   */
+  setInstructorRowEditModeEnabled(i: number, isEnabled: boolean): void {
+    this.isInstructorRowEditModeEnabled[i] = isEnabled;
   }
 
   /**
