@@ -3,6 +3,7 @@ name: L&P Tests
 on:
   push:
     branches:
+      - check
       - master 
       - release
       - account-request-form

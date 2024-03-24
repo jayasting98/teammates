@@ -3,6 +3,7 @@ name: Component Tests (JDK 17)
 on:
   push:
     branches:
+      - check
       - master
       - account-request-form
 

@@ -3,11 +3,13 @@ name: E2E Tests
 on:
   push:
     branches:
+      - check
       - master
       - release
       - account-request-form
   pull_request:
     branches:
+      - check
       - master
       - release
       - account-request-form
